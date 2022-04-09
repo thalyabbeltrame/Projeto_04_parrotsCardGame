@@ -2,6 +2,8 @@ let cardsNumber;
 let gifsToPlay;
 let shuffledCards;
 let numberOfMoves = 0;
+let seconds = 0;
+let timer;
 
 const gifs = [
   {
@@ -58,6 +60,7 @@ function askForCardsNumber() {
 }
 
 function startTheGame() {
+  startTimer();
   shuffleArray();
   let cards = document.querySelector("section ul");
   shuffledCards.forEach((card) => {
@@ -67,6 +70,13 @@ function startTheGame() {
     </li>`;
   });
 }
+
+ function startTimer() {
+   setInterval(() => {
+     seconds++;
+     document.querySelector(".timer").innerHTML = `${seconds} segundos`;
+   }, 1000)
+ }
 
 function shuffleArray() {
   gifsToPlay = gifs.slice(0, cardsNumber / 2);
@@ -116,7 +126,8 @@ function updateInformations(element) {
 function checkIfGameIsOver() {
   setTimeout(() => {
     if (gifsToPlay.every((card) => card.status === "matched")) {
-      alert(`Parabéns! Você ganhou em ${numberOfMoves} jogadas!`);
+      alert(`Parabéns! Você ganhou em ${numberOfMoves} jogadas e ${seconds} segundos!`);
+      clearInterval(timer);
       checkNewGame();
     }
   }, 1000);

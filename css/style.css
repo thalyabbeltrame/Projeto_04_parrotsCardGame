@@ -10,6 +10,7 @@ body {
   align-items: center;
   background-color: #eef9bf;
   font-family: "Roboto", sans-serif;
+  position: relative;
 }
 
 header {
@@ -27,6 +28,16 @@ header h1 {
   letter-spacing: -0.004em;
   line-height: 66px;
   text-align: center;
+}
+
+header > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 section {
