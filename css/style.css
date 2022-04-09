@@ -36,8 +36,12 @@ header > div {
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 10px;
+  right: 10px;
+  font-size: 25px;
+  font-weight: 700;
+  color: #75b79e;
+  letter-spacing: -0.004em;
 }
 
 section {
@@ -56,6 +60,7 @@ li {
   height: 146px;
   margin: 0 17px 34px 17px;
   position: relative;
+  transition: all 1s;
 }
 
 .face {

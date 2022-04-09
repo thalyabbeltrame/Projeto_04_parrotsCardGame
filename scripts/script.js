@@ -1,66 +1,39 @@
-let cardsNumber;
-let gifsToPlay;
+let numberOfCards;
+let cardsToPlay;
 let shuffledCards;
+let timer;
 let numberOfMoves = 0;
 let seconds = 0;
-let timer;
+let sec = 0;
+let min = 0;
 
-const gifs = [
-  {
-    name: "bobross",
-    link: "./gifs/bobrossparrot.gif",
-    status: "unselected",
-  },
-  {
-    name: "explody",
-    link: "./gifs/explodyparrot.gif",
-    status: "unselected",
-  },
-  {
-    name: "fiesta",
-    link: "./gifs/fiestaparrot.gif",
-    status: "unselected",
-  },
-  {
-    name: "metal",
-    link: "./gifs/metalparrot.gif",
-    status: "unselected",
-  },
-  {
-    name: "revestit",
-    link: "./gifs/revertitparrot.gif",
-    status: "unselected",
-  },
-  {
-    name: "triplets",
-    link: "./gifs/tripletsparrot.gif",
-    status: "unselected",
-  },
-  {
-    name: "unicorn",
-    link: "./gifs/unicornparrot.gif",
-    status: "unselected",
-  },
+const parrots = [
+  { name: "bobross", link: "./gifs/bobrossparrot.gif", status: "unselected" },
+  { name: "explody", link: "./gifs/explodyparrot.gif", status: "unselected" },
+  { name: "fiesta", link: "./gifs/fiestaparrot.gif", status: "unselected" },
+  { name: "metal", link: "./gifs/metalparrot.gif", status: "unselected" },
+  { name: "revestit", link: "./gifs/revertitparrot.gif", status: "unselected" },
+  { name: "triplets", link: "./gifs/tripletsparrot.gif", status: "unselected" },
+  { name: "unicorn", link: "./gifs/unicornparrot.gif", status: "unselected" },
 ];
 
-askForCardsNumber();
+askTheNumberOfCards();
 
-function askForCardsNumber() {
-  let isNumberValid = false;
-  while (!isNumberValid) {
-    cardsNumber = Number(prompt("Com quantas cartas você quer jogar?"));
-    if (cardsNumber % 2 === 0 && cardsNumber >= 4 && cardsNumber <= 14) {
-      isNumberValid = true;
+function askTheNumberOfCards() {
+  let isInputValid = false;
+  while (!isInputValid) {
+    numberOfCards = Number(prompt("Com quantas cartas você quer jogar?"));
+    if (numberOfCards % 2 === 0 && numberOfCards >= 4 && numberOfCards <= 14) {
+      isInputValid = true;
       startTheGame();
     } else {
-      isNumberValid = false;
+      isInputValid = false;
       alert("Por favor, digite um número par entre 4 e 14");
     }
   }
 }
 
 function startTheGame() {
-  startTimer();
   shuffleArray();
   let cards = document.querySelector("section ul");
   shuffledCards.forEach((card) => {
@@ -69,18 +42,21 @@ function startTheGame() {
     <div class="face back-face"><img src="${card.link}" alt="${card.name}"></div>
     </li>`;
   });
+  startTimer();
 }
 
- function startTimer() {
-   setInterval(() => {
-     seconds++;
-     document.querySelector(".timer").innerHTML = `${seconds} segundos`;
-   }, 1000)
- }
+function startTimer() {
+  timer = setInterval(() => {
+    seconds++;
+    min = Math.floor(seconds / 60);
+    sec = seconds % 60;
+    document.querySelector(".timer").innerHTML = `${min}min ${sec}s`;
+  }, 1000);
+}
 
 function shuffleArray() {
-  gifsToPlay = gifs.slice(0, cardsNumber / 2);
-  shuffledCards = gifsToPlay.concat(gifsToPlay).sort(comparator);
+  cardsToPlay = [...parrots].slice(0, numberOfCards / 2);
+  shuffledCards = cardsToPlay.concat(cardsToPlay).sort(comparator);
 }
 
 function comparator() {
@@ -95,7 +71,7 @@ function selectCard(element) {
 
 function updateInformations(element) {
   element.classList.add("selected");
-  let objectSelected = gifsToPlay.find(
+  let objectSelected = cardsToPlay.find(
     (card) => card.name === element.children[1].querySelector("img").alt
   );
   let elementsSelected = document.querySelectorAll(".selected");
@@ -105,11 +81,12 @@ function updateInformations(element) {
       item.classList.add("matched");
     });
     objectSelected.status = "matched";
+    element.removeAttribute("onclick");
   } else {
     if (elementsSelected.length === 1) {
       objectSelected.status = "selected";
     } else {
-      gifsToPlay
+      cardsToPlay
         .filter((card) => card.status === "selected")
         .forEach((card) => {
           card.status = "unselected";
@@ -125,8 +102,11 @@ function updateInformations(element) {
 
 function checkIfGameIsOver() {
   setTimeout(() => {
-    if (gifsToPlay.every((card) => card.status === "matched")) {
-      alert(`Parabéns! Você ganhou em ${numberOfMoves} jogadas e ${seconds} segundos!`);
+    let areCardsMatched = cardsToPlay.every(
+      (card) => card.status === "matched"
+    );
+    if (areCardsMatched) {
+      alert(`Você ganhou em ${min}min ${sec}s com ${numberOfMoves} jogadas!`);
       clearInterval(timer);
       checkNewGame();
     }
@@ -134,10 +114,25 @@ function checkIfGameIsOver() {
 }
 
 function checkNewGame() {
-  let answer = prompt("Deseja jogar novamente?", "sim ou não");
-  if (answer.toLowerCase() === "sim") {
-    location.reload();
+  let playAgain = prompt("Deseja jogar novamente?", "sim ou não");
+  if (playAgain.toLowerCase() === "sim") {
+    resetVariables();
+    askTheNumberOfCards();
   } else {
     alert("Até a próxima!");
   }
+}
+
+function resetVariables() {
+  numberOfCards = 0;
+  cardsToPlay = [];
+  shuffledCards = [];
+  numberOfMoves = 0;
+  seconds = 0;
+  sec = 0;
+  min = 0;
+  document.querySelector("section ul").innerHTML = "";
+  parrots.forEach((card) => {
+    card.status = "unselected";
+  });
 }
