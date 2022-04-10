@@ -31,10 +31,10 @@ header > div {
   letter-spacing: -0.004em;
   background-color: #f6fae2;
   border: 1px solid #99cea8;
-  box-shadow: #75b79e 0px 0px 5px;
+  box-shadow: #75b79e 2px 2px 5px;
   border-radius: 5px;
   padding: 3px;
-  position: absolute;
+  position: fixed;
   top: 5px;
   right: 5px;
 }
@@ -80,6 +80,7 @@ li {
   background-color: #a7e9af;
   border: 1px solid #99cea8;
   border-radius: 5px;
+  box-shadow: #99cea8 3px 3px 5px;
   backface-visibility: hidden;
   transition: all 1s;
   transform-style: preserve-3d;
@@ -115,6 +116,10 @@ img {
   header,
   section {
     margin: auto 10px;
+  }
+
+  header > div {
+    font-size: 15px;
   }
 
   header h1 {

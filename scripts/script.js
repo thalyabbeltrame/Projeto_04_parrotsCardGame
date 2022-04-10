@@ -35,6 +35,19 @@ function askTheCardsQty() {
 
 function startTheGame() {
   shuffleArray();
+  distributeCards();
+  startTimer();
+}
+
+function shuffleArray() {
+  cardsToPlay = [...parrots].slice(0, cardsQty / 2);
+  cardsToPlayCopy = cardsToPlay.map((card) => {
+    return { ...card };
+  });
+  shuffledCards = cardsToPlay.concat(cardsToPlayCopy).sort(comparator);
+}
+
+function distributeCards() {
   let cards = document.querySelector("section ul");
   shuffledCards.forEach((card) => {
     cards.innerHTML += `<li onclick="selectCard(this)">
@@ -42,7 +55,6 @@ function startTheGame() {
     <div class="face back-face"><img src="${card.link}" alt="${card.name}"></div>
     </li>`;
   });
-  startTimer();
 }
 
 function startTimer() {
@@ -52,14 +64,6 @@ function startTimer() {
     sec = seconds % 60;
     document.querySelector(".timer").innerHTML = `${min}min ${sec}s`;
   }, 1000);
-}
-
-function shuffleArray() {
-  cardsToPlay = parrots.slice(0, cardsQty / 2);
-  cardsToPlayCopy = cardsToPlay.map((card) => {
-    return { ...card };
-  });
-  shuffledCards = cardsToPlay.concat(cardsToPlayCopy).sort(comparator);
 }
 
 function comparator() {
@@ -74,31 +78,35 @@ function selectCard(element) {
 
 function updateInformations(element) {
   element.classList.add("selected");
-  let objectSelected = cardsToPlay.find(
-    (card) => card.name === element.children[1].querySelector("img").alt
-  );
-  let elementsSelected = document.querySelectorAll(".selected");
-  if (objectSelected.status === "selected") {
-    elementsSelected.forEach((item) => {
-      item.classList.remove("selected");
-      item.classList.add("matched");
-    });
-    objectSelected.status = "matched";
-    element.removeAttribute("onclick");
-  } else {
-    if (elementsSelected.length === 1) {
-      objectSelected.status = "selected";
+  let elementName = element.children[1].querySelector("img").alt;
+  shuffledCards.find(
+    (card) => card.name === elementName && card.status === "unselected"
+  ).status = "selected";
+  let hasEqualCardSelected =
+    shuffledCards.filter(
+      (card) => card.name === elementName && card.status === "selected"
+    ).length > 1;
+  if (hasEqualCardSelected) {
+    document.querySelectorAll(".selected").forEach((element) => {
+      element.classList.remove("selected");
+      element.classList.add("matched");
       element.removeAttribute("onclick");
-    } else {
-      cardsToPlay
+    });
+    shuffledCards
+      .filter((card) => card.name === elementName)
+      .forEach((card) => (card.status = "matched"));
+  } else {
+    let isFirstCard =
+      shuffledCards.filter((card) => card.status === "selected").length === 1;
+    if (isFirstCard) element.removeAttribute("onclick");
+    else {
+      shuffledCards
         .filter((card) => card.status === "selected")
-        .forEach((card) => {
-          card.status = "unselected";
-        });
+        .forEach((card) => (card.status = "unselected"));
       setTimeout(() => {
-        elementsSelected.forEach((item) => {
-          item.classList.remove("selected");
-          item.setAttribute("onclick", "selectCard(this)");
+        document.querySelectorAll(".selected").forEach((element) => {
+          element.classList.remove("selected");
+          element.setAttribute("onclick", "selectCard(this)");
         });
       }, 1000);
     }
@@ -107,7 +115,7 @@ function updateInformations(element) {
 
 function checkIfGameIsOver() {
   setTimeout(() => {
-    let areCardsMatched = cardsToPlay.every(
+    let areCardsMatched = shuffledCards.every(
       (card) => card.status === "matched"
     );
     if (areCardsMatched) {
