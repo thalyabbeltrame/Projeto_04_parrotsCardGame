@@ -1,8 +1,8 @@
-let numberOfCards;
+let cardsQty;
 let cardsToPlay;
 let shuffledCards;
 let timer;
-let numberOfMoves = 0;
+let movesQty = 0;
 let seconds = 0;
 let sec = 0;
 let min = 0;
@@ -17,13 +17,13 @@ const parrots = [
   { name: "unicorn", link: "./gifs/unicornparrot.gif", status: "unselected" },
 ];
 
-askTheNumberOfCards();
+askTheCardsQty();
 
-function askTheNumberOfCards() {
+function askTheCardsQty() {
   let isInputValid = false;
   while (!isInputValid) {
-    numberOfCards = Number(prompt("Com quantas cartas você quer jogar?"));
-    if (numberOfCards % 2 === 0 && numberOfCards >= 4 && numberOfCards <= 14) {
+    cardsQty = Number(prompt("Com quantas cartas você quer jogar?"));
+    if (cardsQty % 2 === 0 && cardsQty >= 4 && cardsQty <= 14) {
       isInputValid = true;
       startTheGame();
     } else {
@@ -55,8 +55,11 @@ function startTimer() {
 }
 
 function shuffleArray() {
-  cardsToPlay = [...parrots].slice(0, numberOfCards / 2);
-  shuffledCards = cardsToPlay.concat(cardsToPlay).sort(comparator);
+  cardsToPlay = parrots.slice(0, cardsQty / 2);
+  cardsToPlayCopy = cardsToPlay.map((card) => {
+    return { ...card };
+  });
+  shuffledCards = cardsToPlay.concat(cardsToPlayCopy).sort(comparator);
 }
 
 function comparator() {
@@ -64,7 +67,7 @@ function comparator() {
 }
 
 function selectCard(element) {
-  numberOfMoves++;
+  movesQty++;
   updateInformations(element);
   checkIfGameIsOver();
 }
@@ -85,6 +88,7 @@ function updateInformations(element) {
   } else {
     if (elementsSelected.length === 1) {
       objectSelected.status = "selected";
+      element.removeAttribute("onclick");
     } else {
       cardsToPlay
         .filter((card) => card.status === "selected")
@@ -94,6 +98,7 @@ function updateInformations(element) {
       setTimeout(() => {
         elementsSelected.forEach((item) => {
           item.classList.remove("selected");
+          item.setAttribute("onclick", "selectCard(this)");
         });
       }, 1000);
     }
@@ -106,7 +111,7 @@ function checkIfGameIsOver() {
       (card) => card.status === "matched"
     );
     if (areCardsMatched) {
-      alert(`Você ganhou em ${min}min ${sec}s com ${numberOfMoves} jogadas!`);
+      alert(`Você ganhou em ${min}min ${sec}s com ${movesQty} jogadas!`);
       clearInterval(timer);
       checkNewGame();
     }
@@ -114,23 +119,23 @@ function checkIfGameIsOver() {
 }
 
 function checkNewGame() {
-  let playAgain = prompt("Deseja jogar novamente?", "sim ou não");
-  if (playAgain.toLowerCase() === "sim") {
+  let newGame = "";
+  while (newGame !== "sim" && newGame !== "não") {
+    newGame = prompt("Deseja jogar novamente?", "sim ou não")
+      .trim()
+      .toLowerCase();
+  }
+  if (newGame === "sim") {
     resetVariables();
-    askTheNumberOfCards();
+    askTheCardsQty();
   } else {
-    alert("Até a próxima!");
+    window.close();
   }
 }
 
 function resetVariables() {
-  numberOfCards = 0;
-  cardsToPlay = [];
-  shuffledCards = [];
-  numberOfMoves = 0;
+  movesQty = 0;
   seconds = 0;
-  sec = 0;
-  min = 0;
   document.querySelector("section ul").innerHTML = "";
   parrots.forEach((card) => {
     card.status = "unselected";

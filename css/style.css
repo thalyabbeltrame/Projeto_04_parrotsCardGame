@@ -15,10 +15,32 @@ body {
 
 header {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: auto 122px;
-  height: 150px;
+  min-height: 150px;
+}
+
+header > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  font-weight: 700;
+  color: #75b79e;
+  letter-spacing: -0.004em;
+  background-color: #f6fae2;
+  border: 1px solid #99cea8;
+  box-shadow: #75b79e 0px 0px 5px;
+  border-radius: 5px;
+  padding: 3px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+header > div > ion-icon {
+  margin-right: 5px;
 }
 
 header h1 {
@@ -28,20 +50,6 @@ header h1 {
   letter-spacing: -0.004em;
   line-height: 66px;
   text-align: center;
-}
-
-header > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 25px;
-  font-weight: 700;
-  color: #75b79e;
-  letter-spacing: -0.004em;
 }
 
 section {
@@ -106,11 +114,11 @@ img {
 
   header,
   section {
-    margin: auto 12px;
+    margin: auto 10px;
   }
 
   header h1 {
     font-size: 36px;
-    line-height: 42px;
+    line-height: 36px;
   }
 }
